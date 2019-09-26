@@ -10,6 +10,7 @@ app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(staticMiddleware);
 app.use('/wiki', require('./routes/wiki'));
+app.use('/users', require('./routes/user'));
 
 // ------- HOME PAGE ---------- //
 // Redirects to /wiki
