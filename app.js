@@ -1,24 +1,33 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-app.use(morgan('dev'))
-app.use(express.urlencoded({extended: false}))
-const layout = require('./views/layout')
-const { db } = require('./models')
-
-const staticMiddleware = express.static('public');
-app.use(staticMiddleware);
-
-app.get('/', (req, res) => {
-    res.send(layout(""))
-})
-
-db.authenticate().then(() => {
-    console.log('connected to database');
-})
-
+const models = require('./models/');
+const staticMiddleware = express.static(__dirname + '/public');
 const PORT = 1339;
 
-app.listen(PORT, () => {
-    console.log(`app listening on port ${PORT}`)
-})
+// -------- MIDDLEWARE ---------- //
+app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: false }));
+app.use(staticMiddleware);
+app.use('/wiki', require('./routes/wiki'));
+
+// ------- HOME PAGE ---------- //
+// Redirects to /wiki
+app.get('/', (req, res) => {
+  res.redirect('/wiki');
+});
+
+// -------- DATABASE --------- //
+models.db.authenticate().then(() => {
+  console.log('connected to database');
+});
+
+// --------- APP LISTENER FUNCTION --------- //
+const init = async () => {
+  await models.db.sync();
+  app.listen(PORT, () => {
+    console.log(`app listening on port ${PORT}`);
+  });
+};
+
+init();
