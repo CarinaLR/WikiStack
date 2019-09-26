@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(staticMiddleware);
 app.use('/wiki', require('./routes/wiki'));
 app.use('/users', require('./routes/user'));
+app.use('/wiki/add', require('./routes/add'));
 
 // ------- HOME PAGE ---------- //
 // Redirects to /wiki
